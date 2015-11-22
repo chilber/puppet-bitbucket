@@ -1,0 +1,21 @@
+#!<%= @ruby_bin %>
+# Fact: bitbucket_builddate, bitbucket_buildnumber, bitbucket_displayname, bitbucket_version
+#
+# Purpose: Return facts for the running version of bitbucket.
+#
+require 'json'
+require 'open-uri'
+begin
+  url = 'http://<%= @uri %>:<%= @port %><%= @context_path %>/rest/api/1.0/application-properties'
+  info = open(url, &:read)
+rescue
+  exit 0
+end
+pinfo = JSON.load(info)
+pinfo.each do |key, value|
+  actual_value = value
+  if value.is_a? Array
+     actual_value = value.join(',')
+  end
+  puts "bitbucket_#{key.chomp()}=#{actual_value.chomp}"
+end

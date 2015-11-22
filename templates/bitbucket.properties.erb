@@ -1,0 +1,8 @@
+<%- config_properties = scope['::bitbucket::config_properties'] -%>
+<%- config_properties.sort.each do |key,value| -%>
+<%= key %>=<%= value %>
+<%- end -%>
+jdbc.driver=<%= scope.lookupvar('bitbucket::dbdriver') %>
+jdbc.url=<%= scope.lookupvar('bitbucket::dburl') %>
+jdbc.user=<%= scope.lookupvar('bitbucket::dbuser') %>
+jdbc.password=<%= scope.lookupvar('bitbucket::dbpassword') %>

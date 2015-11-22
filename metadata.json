@@ -1,0 +1,32 @@
+{
+  "name": "puppet-bitbucket",
+  "version": "1.0.0",
+  "author": "puppet-community",
+  "summary": "This module install Atlassian Bitbucket server",
+  "license": "MIT",
+  "source": "TBA",
+  "project_page": "TBA",
+  "issues_url": "TBA",
+  "dependencies": [
+    {
+      "name": "puppetlabs-stdlib",
+      "version_requirement": ">= 1.0.0"
+    }
+  ],
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "Debian",
+      "operatingsystemrelease": [
+        "7",
+        "8"
+      ]
+    },
+    {
+      "operatingsystem": "RedHat",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
+    }
+  ]
+}
