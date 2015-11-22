@@ -27,7 +27,7 @@ class bitbucket (
   $setup_properties = {
     'setup.displayName' => 'Bitbucket server',
     'setup.baseUrl' => "https://${::fqdn}",
-    'setup.license' => 'AAABLw0ODAoPeNptkE1rwkAQhu/7KxZ6aQ8ryfoRERaqSSjSxJRoSw+9rMtYF/MhsxNb++sbG4uleBgY5uN5552bVQM8M8RlwP1g0pcTr8/DaMWl5w9ZBM6g3ZOtKzWztG7MDojfLgEPgHdvEx4fdNHoU5+FCD9JpAnUaVv4npBjFtYVaUNxqm2hSkC0RPc71Lv6w9IXYM/UJbtwFGEDzJF22167Zg/QVQproHLwAuhOU5K1vIqg0pWB+HNv8fhH2BdyxDJ815V1HTXthPnjRfgsknTg1XEPC12CCrM0jfNwPk1Y53MeqVkQPYggy6cimqavYpwPQ7aMF6oNkYwCzx8MJDuD2vFkHl3rXD+zu2JJGglQbXThfu0vmnINmG2eXWtaCZ89NWi22sH/F38D+heU9jAsAhRzwj0ZMcWaXhhdIX+OCg7nkclBOgIUZquqAoEy4BoxUU5FVWYAUektn8Y=X02f7',
+    #    'setup.license' => '',
     'setup.sysadmin.username' => 'admin',
     'setup.sysadmin.password' => 'password',
     'setup.sysadmin.displayName' => 'John Doe',
