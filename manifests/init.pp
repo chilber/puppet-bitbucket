@@ -9,7 +9,7 @@ class bitbucket (
 
   # Bitbucket Settings
   $version = '4.3.2',
-  $checksum = '5ee1ad06e7838421d85452eacbb5cf7d',
+  $checksum = '5e1d2393a840ae2f11ceeb8d78c1ba5d',
   $product = 'bitbucket',
   $format = 'tar.gz',
   $installdir = '/opt/bitbucket',
