@@ -7,9 +7,9 @@ class bitbucket (
   $jvm_maximum_memory = '1024m',
   $jvm_support_recommended_args = '',
 
-  # Stash Settings
-  $version = '4.0.2',
-  $checksum = '25bc382ea55de3d5fd5427edd54535ab',
+  # Bitbucket Settings
+  $version = '4.3.2',
+  $checksum = '5ee1ad06e7838421d85452eacbb5cf7d',
   $product = 'bitbucket',
   $format = 'tar.gz',
   $installdir = '/opt/bitbucket',
