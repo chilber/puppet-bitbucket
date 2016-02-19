@@ -1,5 +1,7 @@
 # == Class bitbucket::install
 #
+# This class is called from bitbucket for install.
+#
 class bitbucket::install {
 
   if $::bitbucket::manage_usr_grp {
@@ -9,7 +11,8 @@ class bitbucket::install {
     }
 
     user { $::bitbucket::user:
-      comment          => 'Stash daemon account',
+      ensure           => present,
+      comment          => 'Bitbucket daemon account',
       shell            => '/bin/bash',
       home             => $::bitbucket::homedir,
       password         => '*',
@@ -30,7 +33,7 @@ class bitbucket::install {
 
   case $::bitbucket::deploy_module {
     'staging': {
-      require staging
+      require ::staging
       staging::file { $bitbucket::file:
         source  => "${::bitbucket::download_url}/${::bitbucket::file}",
         timeout => 1800,
@@ -48,7 +51,7 @@ class bitbucket::install {
       }
     }
     'archive': {
-      require archive
+      require ::archive
       archive { "/tmp/${::bitbucket::file}":
         ensure        => present,
         extract       => true,
@@ -68,7 +71,7 @@ class bitbucket::install {
       }
     }
     default: {
-      fail('deploy_module parameter must equal "archive" or staging""')
+      fail('deploy_module parameter must equal "archive" or "staging"')
     }
   }
 

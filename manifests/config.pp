@@ -1,5 +1,7 @@
 # == Class bitbucket::config
 #
+# This class is called from bitbucket for configuration.
+#
 class bitbucket::config {
 
   # server.xml

@@ -38,31 +38,31 @@ describe 'bitbucket class' do
       apply_manifest(pp, :catch_failures => true)
       sleep 180
       shell 'wget -q --tries=20 --retry-connrefused --read-timeout=10 localhost:7990'
-      apply_manifest(pp, :catch_changes  => true)
+      apply_manifest(pp, :catch_changes => true)
     end
 
     describe process('java') do
       it { should be_running }
     end
-  
+
     describe port(7990) do
       it { is_expected.to be_listening }
     end
-  
+
     describe service('bitbucket') do
       it { should be_enabled }
     end
-  
+
     describe user('bitbucket') do
       it { should exist }
       it { should belong_to_group 'bitbucket' }
       it { should have_login_shell '/bin/bash' }
     end
-  
+
     describe command('curl http://localhost:7990') do
       its(:stdout) { should match(/Git repository management/) }
     end
-  
+
 #    describe command('facter -p stash_version') do
 #      its(:stdout) { should match(/4\.0\.2/) }
 #    end
