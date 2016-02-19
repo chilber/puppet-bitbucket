@@ -30,15 +30,14 @@
 
     <Service name="Catalina">
 
-      <Connector port="<%= scope['::bitbucket::tomcat_port'] %>" protocol="HTTP/1.1"
+      <Connector port="<%= @tomcat_port %>" protocol="HTTP/1.1"
                    connectionTimeout="20000"
                    useBodyEncodingForURI="true"
                    redirectPort="8443"
                    compression="on"
                    compressableMimeType="text/html,text/xml,text/plain,text/css,application/json,application/javascript,application/x-javascript"
-<% proxy = scope['::bitbucket::proxy'] -%>
-<% if proxy -%>
-<%   proxy.sort.each do |key,value| -%>
+<% if @proxy -%>
+<%   @proxy.sort.each do |key,value| -%>
                     <%= key %>="<%= value %>"
 <%   end -%>
 <% end -%>
@@ -56,7 +55,7 @@
                   xmlValidation="false" xmlNamespaceAware="false">
 
                 <Context docBase="${catalina.home}/atlassian-bitbucket"
-                  path="<%= scope['::bitbucket::context_path'] %>"
+                  path="<%= @context_path %>"
                          reloadable="false"
                          useHttpOnly="true"/>
 

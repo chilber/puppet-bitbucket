@@ -1,5 +1,7 @@
 # == Class bitbucket::service
 #
+# This class is called from bitbucket for service management.
+#
 class bitbucket::service {
 
   file { $::bitbucket::service_file_location:
@@ -9,16 +11,13 @@ class bitbucket::service {
 
   if $::bitbucket::service_manage {
 
-    validate_string($::bitbucket::service_ensure)
-    validate_bool($::bitbucket::service_enable)
-
     if $::bitbucket::service_file_location =~ /systemd/ {
       exec { 'refresh_systemd':
         command     => 'systemctl daemon-reload',
         refreshonly => true,
         subscribe   => File[$::bitbucket::service_file_location],
         before      => Service['bitbucket'],
-        path        => [ '/bin/', '/sbin/' , '/usr/bin/', '/usr/sbin/' ],
+        path        => [ '/bin/', '/sbin/', '/usr/bin/', '/usr/sbin/' ],
       }
     }
 

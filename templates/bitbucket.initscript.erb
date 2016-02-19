@@ -13,13 +13,13 @@
 
 # Adapt the following lines to your configuration
 # RUNUSER: The user to run Bitbucket Server as.
-RUNUSER=<%= scope['::bitbucket::user'] %>
+RUNUSER=<%= @user %>
 
 # BITBUCKET_INSTALLDIR: The path to the Bitbucket Server installation directory
-BITBUCKET_INSTALLDIR="<%= scope['::bitbucket::webappdir'] %>"
+BITBUCKET_INSTALLDIR="<%= @webappdir %>"
 
 # BITBUCKET_HOME: Path to the Bitbucket home directory
-BITBUCKET_HOME="<%= scope['::bitbucket::homedir'] %>"
+BITBUCKET_HOME="<%= @homedir %>"
 
 # ==================================================================================
 # ==================================================================================
