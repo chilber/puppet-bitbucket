@@ -4,6 +4,9 @@
 # because we do not want to distrubute these facts to all systems.
 #
 class bitbucket::facts(
+  $ensure        = 'present',
+  $port          = $::bitbucket::tomcat_port,
+  $uri           = '127.0.0.1',
   $context_path  = $::bitbucket::context_path,
   $json_packages = $::bitbucket::params::json_packages,
 ) inherits bitbucket {
