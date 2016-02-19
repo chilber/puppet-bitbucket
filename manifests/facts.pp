@@ -11,7 +11,7 @@ class bitbucket::facts(
   $json_packages = $::bitbucket::params::json_packages,
 ) inherits bitbucket {
 
-  # Puppet Enterprise supplies its own ruby version if your using it.
+  # Puppet Enterprise supplies its own ruby version if you're using it.
   # A modern ruby version is required to run the executable fact
   if $::puppetversion =~ /Puppet Enterprise/ {
     $ruby_bin = '/opt/puppet/bin/ruby'
