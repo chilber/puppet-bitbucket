@@ -31,8 +31,8 @@ On RedHat/CentOS 6 systems, this module will also ensure that `redhat-lsb` is in
 
 * Bitbucket requires a Java Developers Kit (JDK) or Java Run-time Environment (JRE) platform to be installed on your server's operating system. Oracle JDK / JRE (formerly Sun JDK / JRE) versions 1.8 and Open JDK/ JRE versions 1.8u0 - 1.8u20 and 1.8u40+ are [currently supported by Atlassian](https://confluence.atlassian.com/bitbucketserver/supported-platforms-776640981.html#Supportedplatforms-javaSupportedplatformsdetailsJava).
 * Bitbucket requires a relational database to store its configuration data. This module currently supports PostgreSQL 8.4 to 9.x and MySQL 5.x. We suggest using the [puppetlabs-postgresql](https://forge.puppetlabs.com/puppetlabs/postgresql) or [puppetlabs-mysql](https://forge.puppetlabs.com/puppetlabs/mysql) modules to configure/manage the database. The module uses PostgreSQL as a default.
-* Bitbucket requires Git 1.8.0+, excluding 1.8.4.3, 2.0.2, and 2.0.3. RedHat/CentOS 6 and Debian 7 systems ship with Git 1.7 by default. You will need to upgrade Git in order to run Bitbucket, but this module does not provide that functionality at present.
-* Whilst not required, for production use we recommend using nginx/apache as a reverse proxy to Bitbucket. We suggest using the jfryman/nginx puppet module.
+* Bitbucket requires Git 1.8.0+ (excluding 1.8.4.3, 2.0.2, and 2.0.3). RedHat/CentOS 6 and Debian 7 systems ship with Git 1.7 by default. You will need to upgrade Git in order to run Bitbucket, but this module does not provide that functionality at present.
+* While not required, for production use we recommend using nginx/apache as a reverse proxy to Bitbucket. We suggest using the [jfryman-nginx](https://forge.puppetlabs.com/jfryman/nginx) puppet module.
 
 ### Beginning with bitbucket
 
@@ -60,7 +60,7 @@ Enable external facts for bitbucket version.
 
 ##### Upgrades to Bitbucket
 
-Bitbucket can be upgraded by incrementing this version number. This will *STOP* the running instance of Bitbucket and attempt to upgrade. You should take caution when doing large version upgrades. Always backup your database and your home directory. The `bitbucket::facts` class is required for upgrades.
+Bitbucket can be upgraded by incrementing the `version` number. This will *STOP* the running instance of Bitbucket and attempt to upgrade. You should take caution when doing large version upgrades. Always backup your database and your home directory. The `bitbucket::facts` class is required for upgrades.
 
 ```puppet
   class { 'bitbucket':
@@ -72,11 +72,29 @@ Bitbucket can be upgraded by incrementing this version number. This will *STOP* 
 If the bitbucket service is managed outside of puppet the `stop_bitbucket` paramater can be used to shut down Bitbucket.
 ```puppet
   class { 'bitbucket':
-    javahome   => '/etc/alternatives/java',
     version    => '4.3.2',
     stop_bitbucket => 'crm resource stop bitbucket && sleep 15',
   }
   class { 'bitbucket::facts': }
+```
+
+##### Migrating from Stash
+
+Bitbucket can be migrated from Stash with the `migrate_from_stash` parameter. This will *STOP* the running instance of Stash and attempt to migrate the user, group, and home directory. You should take caution when migrating. Always backup your database and your home directory.
+
+```puppet
+  class { 'bitbucket':
+    migrate_from_stash  => true,
+  }
+```
+
+If the stash service is managed outside of puppet the `migrate_stop` paramater can be used to shut down Stash prior to migrating.
+
+```puppet
+  class { 'bitbucket':
+    migrate_from_stash  => true,
+    migrate_stop => 'crm resource stop stash && sleep 15',
+  }
 ```
 
 ## Usage
@@ -153,7 +171,8 @@ bitbucket::bitbucket_stop: '/usr/sbin crm resource stop bitbucket'
 #### Private classes
 * `bitbucket::install`: Installs Bitbucket binaries
 * `bitbucket::config`: Modifies Bitbucket/Tomcat configuration files
-* `bitbucket::service`: Manage the Bitbucket service.
+* `bitbucket::service`: Manage the Bitbucket service
+* `bitbucket::migrate`: Migrate Stash user, group, and home directory to Bitbucket
 
 ### Parameters
 
