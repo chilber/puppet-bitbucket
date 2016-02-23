@@ -30,10 +30,9 @@ RSpec.configure do |c|
     # Install module and dependencies
     puppet_module_install(:source => proj_root, :module_name => 'bitbucket')
     hosts.each do |host|
-      on host, '/usr/bin/git clone https://github.com/puppet-community/puppet-archive.git /etc/puppet/modules/archive'
       on host, puppet('module', 'install', 'puppetlabs-stdlib'), { :acceptable_exit_codes => [0,1] }
       on host, puppet('module', 'install', 'puppetlabs-inifile'), { :acceptable_exit_codes => [0,1] }
-      on host, puppet('module', 'install', 'nanliu-archive'), { :acceptable_exit_codes => [0,1] }
+      on host, puppet('module', 'install', 'puppet-archive'), { :acceptable_exit_codes => [0,1] }
       on host, puppet('module', 'install', 'nanliu-staging'), { :acceptable_exit_codes => [0,1] }
     end
   end
