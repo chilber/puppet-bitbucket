@@ -6,10 +6,11 @@ if ENV['download_url']
 else
   download_url = 'undef'
 end
-if download_url == 'undef'
-  java_url = "http://download.oracle.com/otn-pub/java/jdk/8u45-b14/"
-else
+if download_url != 'undef'
   java_url = download_url
+else
+  download_url = 'http://www.atlassian.com/software/stash/downloads/binary'
+  java_url = "http://download.oracle.com/otn-pub/java/jdk/8u73-b02/"
 end
 
 describe 'bitbucket class' do
@@ -17,22 +18,24 @@ describe 'bitbucket class' do
     it 'should work idempotently with no errors' do
       pp = <<-EOS
       file { '/opt/java': ensure => directory } ->
-      staging::file { 'jdk-8u45-linux-x64.tar.gz':
-        source => '#{java_url}/jdk-8u45-linux-x64.tar.gz',
+      staging::file { 'jdk-8u73-linux-x64.tar.gz':
+        source => '#{java_url}/jdk-8u73-linux-x64.tar.gz',
         timeout => '1800',
-        wget_option => '-q -c --header "Cookie: oraclelicense=accept-securebackup-cookie"',
+        curl_option => '--header "Cookie: oraclelicense=accept-securebackup-cookie"',
       } ->
-      staging::extract { 'jdk-8u45-linux-x64.tar.gz':
+      staging::extract { 'jdk-8u73-linux-x64.tar.gz':
         target => '/opt/java',
         creates => '/opt/java/bin/java',
         strip => '1',
       } ->
       class { 'bitbucket':
         download_url  => '#{download_url}',
-        checksum      => '25bc382ea55de3d5fd5427edd54535ab',
-        version       => '4.0.2',
         javahome      => '/opt/java',
-      }
+        license       => 'AAABLw0ODAoPeNptkE1rwkAQhu/7KxZ6aQ8ryfoRERaqSSjSxJRoSw+9rMtYF/MhsxNb++sbG4uleBgY5uN5552bVQM8M8RlwP1g0pcTr8/DaMWl5w9ZBM6g3ZOtKzWztG7MDojfLgEPgHdvEx4fdNHoU5+FCD9JpAnUaVv4npBjFtYVaUNxqm2hSkC0RPc71Lv6w9IXYM/UJbtwFGEDzJF22167Zg/QVQproHLwAuhOU5K1vIqg0pWB+HNv8fhH2BdyxDJ815V1HTXthPnjRfgsknTg1XEPC12CCrM0jfNwPk1Y53MeqVkQPYggy6cimqavYpwPQ7aMF6oNkYwCzx8MJDuD2vFkHl3rXD+zu2JJGglQbXThfu0vmnINmG2eXWtaCZ89NWi22sH/F38D+heU9jAsAhRzwj0ZMcWaXhhdIX+OCg7nkclBOgIUZquqAoEy4BoxUU5FVWYAUektn8Y=X02f7',
+        dburl         => 'jdbc:hsqldb:/home/bitbucket/data/db;shutdown=true',
+        dbdriver      => 'org.hsqldb.jdbcDriver',
+      } ->
+      class { 'bitbucket::facts': }
       EOS
 
       apply_manifest(pp, :catch_failures => true)
@@ -59,12 +62,12 @@ describe 'bitbucket class' do
       it { should have_login_shell '/bin/bash' }
     end
 
-    describe command('curl http://localhost:7990') do
+    describe command('curl -L http://localhost:7990') do
       its(:stdout) { should match(/Git repository management/) }
     end
 
-#    describe command('facter -p stash_version') do
-#      its(:stdout) { should match(/4\.0\.2/) }
-#    end
+   describe command('facter -p bitbucket_version') do
+     its(:stdout) { should match(/4\.3\.2/) }
+   end
   end
 end
