@@ -134,6 +134,24 @@ class bitbucket (
     'setup.sysadmin.emailAddress' => $sysadmin_email,
   }
 
+  if $::bitbucket_version {
+    # If the running version of bitbucket is less than the expected version
+    # Shut it down in preparation for upgrade.
+    if versioncmp($version, $::bitbucket_version) > 0 {
+      notify { 'Attempting to upgrade bitbucket': }
+      exec { $stop_bitbucket:
+        before => Class['::bitbucket::install'],
+      }
+    }
+  }
+
+  if $migrate_from_stash {
+    notify { 'Attempting to upgrade from Stash': }
+    class { '::bitbucket::migrate':
+      before => Class['::bitbucket::install'],
+    }
+  }
+
   class { '::bitbucket::install': } ->
   class { '::bitbucket::config': } ~>
   class { '::bitbucket::service': } ->
