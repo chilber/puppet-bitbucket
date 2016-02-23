@@ -22,6 +22,7 @@ class bitbucket::params {
         $service_file_location = '/usr/lib/systemd/system/bitbucket.service'
         $service_file_template = 'bitbucket/bitbucket.service.erb'
       } elsif $::operatingsystemmajrelease == '6' {
+        $lsb_package           = 'redhat-lsb'
         $json_packages         = [ 'rubygem-json', 'ruby-json' ]
         $service_file_location = '/etc/init.d/bitbucket'
         $service_file_template = 'bitbucket/bitbucket.initscript.erb'
