@@ -46,7 +46,7 @@ class bitbucket (
   $dbdriver   = 'org.postgresql.Driver',
 
   # Misc Settings
-  $download_url = 'http://www.atlassian.com/software/bitbucket/downloads/binary',
+  $download_url = 'http://www.atlassian.com/software/stash/downloads/binary',
   $deploy_module = 'archive',
 
   # Manage service
@@ -62,9 +62,11 @@ class bitbucket (
 
   # One-off task to migrate from stash to bitbucket
   $migrate_from_stash = false,
-  $migrate_homedir = '/home/stash',
+  $migrate_homedir    = '/home/stash',
   $migrate_installdir = '/opt/stash',
-  $migrate_user = 'stash',
+  $migrate_user       = 'stash',
+  $migrate_group      = 'stash',
+  $migrate_stop       = 'service stash stop && sleep 15',
 
 ) inherits ::bitbucket::params {
 
@@ -74,7 +76,9 @@ class bitbucket (
   validate_string($jvm_support_recommended_args)
 
   validate_string($version)
-  validate_string($checksum)
+  if $checksum {
+    validate_string($checksum)
+  }
   validate_string($product)
   validate_string($format)
   validate_absolute_path($installdir)
@@ -115,6 +119,8 @@ class bitbucket (
   validate_absolute_path($migrate_homedir)
   validate_absolute_path($migrate_installdir)
   validate_string($migrate_user)
+  validate_string($migrate_group)
+  validate_string($migrate_stop)
 
   $webappdir = "${installdir}/atlassian-${product}-${version}"
   $file = "atlassian-${product}-${version}.${format}"
