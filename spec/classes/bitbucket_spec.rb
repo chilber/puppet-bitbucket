@@ -19,6 +19,10 @@ describe 'bitbucket' do
           it { is_expected.to contain_class('bitbucket').that_requires('bitbucket::service') }
 
           # Install tests
+          it { is_expected.not_to contain_exec('shutdown_stash') }
+          it { is_expected.not_to contain_exec('move_homedir') }
+          it { is_expected.not_to contain_exec('group_migrate') }
+          it { is_expected.not_to contain_exec('user_migrate') }
           it { is_expected.to contain_group('bitbucket') }
           it { is_expected.to contain_user('bitbucket') }
           it { is_expected.to contain_file('/opt/bitbucket') }
@@ -455,6 +459,7 @@ describe 'bitbucket' do
         end
 
         it { is_expected.to contain_file('/etc/init.d/bitbucket') }
+        it { is_expected.to contain_package('redhat-lsb') }
       end
       context 'on RedHat 7' do
         let(:facts) do
@@ -556,6 +561,146 @@ describe 'bitbucket' do
             'enable' => false,
           )
         end
+      end
+    end
+  end
+
+  context 'when migrating from stash' do
+    context 'bitbucket class without any parameters' do
+      let(:facts) do
+        {
+          :osfamily                  => 'Debian',
+          :operatingsystemmajrelease => '7',
+        }
+      end
+      let(:params) do
+        {
+          'migrate_from_stash' => true,
+        }
+      end
+
+      it { is_expected.to contain_notify('Attempting to upgrade from Stash') }
+      it { is_expected.to contain_class('bitbucket::migrate') }
+      it { is_expected.to contain_exec('shutdown_stash') }
+      it { is_expected.to contain_exec('move_homedir') }
+      it { is_expected.to contain_exec('group_migrate') }
+      it { is_expected.to contain_exec('user_migrate') }
+    end
+    context 'bitbucket class with parameter overrides' do
+      let(:facts) do
+        {
+          :osfamily                  => 'Debian',
+          :operatingsystemmajrelease => '7',
+        }
+      end
+      let(:params) do
+        {
+          'installdir'         => '/path/to/bitbucket/install',
+          'homedir'            => '/path/to/bitbucket/home',
+          'product'            => 'new-bitbucket-name',
+          'version'            => '4.0.2',
+          'format'             => 'tgz',
+          'user'               => 'custom_user',
+          'group'              => 'custom_group',
+          'migrate_from_stash' => true,
+          'migrate_homedir'    => '/var/stash',
+          'migrate_stop'       => 'crm resource stop stash && sleep 15',
+          'migrate_group'      => 'stash_group',
+          'migrate_user'       => 'stash_user',
+        }
+      end
+      it do
+        is_expected.to contain_exec('shutdown_stash').with(
+          'command' => 'crm resource stop stash && sleep 15',
+          'onlyif'  => '/bin/ps -u stash_user',
+        )
+      end
+      it do
+        is_expected.to contain_exec('move_homedir').with(
+          'command' => '/bin/mv /var/stash /path/to/bitbucket/home',
+          'creates' => '/path/to/bitbucket/home',
+          'unless'  => '/bin/ps -u stash_user',
+        ).that_requires(
+          'Exec[shutdown_stash]',
+        ).that_comes_before(
+          'File[/path/to/bitbucket/home]'
+        )
+      end
+      it do
+        is_expected.to contain_exec('group_migrate').with(
+          'command' => 'groupmod -n custom_group stash_group',
+          'onlyif'  => 'cat /etc/groups | grep ^stash_group',
+          'unless'  => '/bin/ps -u stash_user',
+        ).that_requires(
+          'Exec[shutdown_stash]'
+        ).that_comes_before(
+          'Group[custom_group]'
+        )
+      end
+      it do
+        is_expected.to contain_exec('user_migrate').with(
+          'command' => 'usermod -l custom_user stash_user',
+          'onlyif'  => 'cat /etc/passwd | grep ^stash_user',
+          'unless'  => '/bin/ps -u stash_user',
+        ).that_requires(
+          'Exec[shutdown_stash]'
+        ).that_comes_before(
+          'User[custom_user]'
+        )
+      end
+    end
+    context 'bitbucket class when not managing user/group' do
+      let(:facts) do
+        {
+          :osfamily                  => 'Debian',
+          :operatingsystemmajrelease => '7',
+        }
+      end
+      let(:params) do
+        {
+          'manage_usr_grp'     => false,
+          'migrate_from_stash' => true,
+        }
+      end
+      it { is_expected.to contain_exec('shutdown_stash') }
+      it { is_expected.to contain_exec('move_homedir') }
+      it { is_expected.not_to contain_exec('group_migrate') }
+      it { is_expected.not_to contain_exec('user_migrate') }
+    end
+  end
+
+  context 'when upgrading from an older version of bitbucket' do
+    context 'bitbucket class without any parameters' do
+      let(:facts) do
+        {
+          :osfamily                  => 'Debian',
+          :operatingsystemmajrelease => '7',
+          :bitbucket_version         => '4.0.2',
+        }
+      end
+
+      it { is_expected.to contain_notify('Attempting to upgrade bitbucket') }
+      it { is_expected.to contain_exec('service bitbucket stop && sleep 15') }
+    end
+    context 'bitbucket class with parameter overrides' do
+      let(:facts) do
+        {
+          :osfamily                  => 'Debian',
+          :operatingsystemmajrelease => '7',
+          :bitbucket_version         => '4.0.2',
+        }
+      end
+      let(:params) do
+        {
+          'stop_bitbucket' => 'crm resource stop bitbucket && sleep 15',
+        }
+      end
+      it do
+        is_expected.to contain_exec(
+          'crm resource stop bitbucket && sleep 15'
+        ).that_comes_before(
+          'Class[bitbucket::install]'
+        )
       end
     end
   end
