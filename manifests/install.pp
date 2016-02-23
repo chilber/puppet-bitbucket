@@ -114,4 +114,10 @@ class bitbucket::install {
     refreshonly => true,
   }
 
+  # Add LSB if needed, per: https://confluence.atlassian.com/bitbucketserver/running-bitbucket-server-as-a-linux-service-776640157.html#RunningBitbucketServerasaLinuxservice-Runningonsystemboot
+  if $::bitbucket::lsb_package {
+    package { $::bitbucket::lsb_package:
+      ensure => installed,
+    }
+  }
 }
