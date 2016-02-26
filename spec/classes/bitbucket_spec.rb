@@ -437,7 +437,11 @@ describe 'bitbucket' do
           }
         end
 
-        it { is_expected.to contain_file('/etc/init.d/bitbucket') }
+        it do
+          is_expected.to contain_file('/etc/init.d/bitbucket').with_content(
+            /status_of_proc -p \$PIDFILE \"\${NAME}\" $NAME && exit 0 || exit \$?/
+          )
+        end
       end
       context 'on Debian 8' do
         let(:facts) do
@@ -458,7 +462,11 @@ describe 'bitbucket' do
           }
         end
 
-        it { is_expected.to contain_file('/etc/init.d/bitbucket') }
+        it do
+          is_expected.to contain_file('/etc/init.d/bitbucket').with_content(
+            /status -p \$PIDFILE \"\${NAME}\" $NAME && exit 0 || exit \$?/
+          )
+        end
         it { is_expected.to contain_package('redhat-lsb') }
       end
       context 'on RedHat 7' do
@@ -480,7 +488,11 @@ describe 'bitbucket' do
           }
         end
 
-        it { is_expected.to contain_file('/etc/init.d/bitbucket') }
+        it do
+          is_expected.to contain_file('/etc/init.d/bitbucket').with_content(
+            /status_of_proc -p \$PIDFILE \"\${NAME}\" $NAME && exit 0 || exit \$?/
+          )
+        end
       end
     end
     context 'bitbucket class with parameter overrides' do
