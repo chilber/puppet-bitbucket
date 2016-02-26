@@ -38,6 +38,10 @@ describe 'bitbucket' do
           it { is_expected.to contain_ini_setting('/home/bitbucket/shared/bitbucket.properties  setup.sysadmin.emailAddress') }
           it { is_expected.to contain_ini_setting('/home/bitbucket/shared/bitbucket.properties  setup.sysadmin.password') }
           it { is_expected.to contain_ini_setting('/home/bitbucket/shared/bitbucket.properties  setup.sysadmin.username') }
+          it { is_expected.to contain_ini_setting('/home/bitbucket/shared/bitbucket.properties  jdbc.driver') }
+          it { is_expected.to contain_ini_setting('/home/bitbucket/shared/bitbucket.properties  jdbc.password') }
+          it { is_expected.to contain_ini_setting('/home/bitbucket/shared/bitbucket.properties  jdbc.url') }
+          it { is_expected.to contain_ini_setting('/home/bitbucket/shared/bitbucket.properties  jdbc.user') }
           it { is_expected.to contain_exec('chown_/opt/bitbucket/atlassian-bitbucket-4.3.2') }
 
           # Config tests
@@ -246,6 +250,42 @@ describe 'bitbucket' do
               'section' => '',
               'setting' => 'setup.sysadmin.username',
               'value'   => 'custom_admin',
+            )
+          end
+          it do
+            is_expected.to contain_ini_setting('/path/to/bitbucket/home/shared/bitbucket.properties  jdbc.driver').with(
+              'ensure'  => 'present',
+              'path'    => '/path/to/bitbucket/home/shared/bitbucket.properties',
+              'section' => '',
+              'setting' => 'jdbc.driver',
+              'value'   => 'org.hsqldb.jdbcDriver',
+            )
+          end
+          it do
+            is_expected.to contain_ini_setting('/path/to/bitbucket/home/shared/bitbucket.properties  jdbc.password').with(
+              'ensure'  => 'present',
+              'path'    => '/path/to/bitbucket/home/shared/bitbucket.properties',
+              'section' => '',
+              'setting' => 'jdbc.password',
+              'value'   => 'custom_password',
+            )
+          end
+          it do
+            is_expected.to contain_ini_setting('/path/to/bitbucket/home/shared/bitbucket.properties  jdbc.url').with(
+              'ensure'  => 'present',
+              'path'    => '/path/to/bitbucket/home/shared/bitbucket.properties',
+              'section' => '',
+              'setting' => 'jdbc.url',
+              'value'   => 'jdbc:hsqldb:/path/to/bitbucket/home/data/db;shutdown=true',
+            )
+          end
+          it do
+            is_expected.to contain_ini_setting('/path/to/bitbucket/home/shared/bitbucket.properties  jdbc.user').with(
+              'ensure'  => 'present',
+              'path'    => '/path/to/bitbucket/home/shared/bitbucket.properties',
+              'section' => '',
+              'setting' => 'jdbc.user',
+              'value'   => 'custom_db_user',
             )
           end
           it do
@@ -590,6 +630,7 @@ describe 'bitbucket' do
           'migrate_from_stash' => true,
         }
       end
+      it { is_expected.to compile.with_all_deps }
 
       it { is_expected.to contain_notify('Attempting to upgrade from Stash') }
       it { is_expected.to contain_class('bitbucket::migrate') }
@@ -641,7 +682,7 @@ describe 'bitbucket' do
       it do
         is_expected.to contain_exec('group_migrate').with(
           'command' => 'groupmod -n custom_group stash_group',
-          'onlyif'  => 'cat /etc/groups | grep ^stash_group',
+          'onlyif'  => 'cat /etc/group | grep ^stash_group',
           'unless'  => '/bin/ps -u stash_user',
         ).that_requires(
           'Exec[shutdown_stash]'

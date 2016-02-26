@@ -17,17 +17,15 @@ class bitbucket::migrate {
       onlyif  => "test -d ${::bitbucket::migrate_homedir}",
       unless  => "/bin/ps -u ${::bitbucket::migrate_user}",
       require => Exec['shutdown_stash'],
-      before  => File[$::bitbucket::homedir],
     }
 
     if $::bitbucket::manage_usr_grp {
       exec { 'group_migrate':
         command => "groupmod -n ${::bitbucket::group} ${::bitbucket::migrate_group}",
         path    => '/usr/bin:/usr/sbin:/bin:/usr/local/bin',
-        onlyif  => "cat /etc/groups | grep ^${::bitbucket::migrate_group}",
+        onlyif  => "cat /etc/group | grep ^${::bitbucket::migrate_group}",
         unless  => "/bin/ps -u ${::bitbucket::migrate_user}",
         require => Exec['shutdown_stash'],
-        before  => Group[$::bitbucket::group],
       }
 
       exec { 'user_migrate':
@@ -36,7 +34,6 @@ class bitbucket::migrate {
         onlyif  => "cat /etc/passwd | grep ^${::bitbucket::migrate_user}",
         unless  => "/bin/ps -u ${::bitbucket::migrate_user}",
         require => Exec['shutdown_stash'],
-        before  => User[$::bitbucket::user],
       }
     }
   }
