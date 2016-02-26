@@ -1,8 +1,0 @@
-<%- config_properties = @config_properties -%>
-<%- config_properties.sort.each do |key,value| -%>
-<%= key %>=<%= value %>
-<%- end -%>
-jdbc.driver=<%= @dbdriver %>
-jdbc.url=<%= @dburl %>
-jdbc.user=<%= @dbuser %>
-jdbc.password=<%= @dbpassword %>

@@ -132,6 +132,10 @@ class bitbucket (
     'setup.sysadmin.password' => $sysadmin_password,
     'setup.sysadmin.displayName' => $sysadmin_name,
     'setup.sysadmin.emailAddress' => $sysadmin_email,
+    'jdbc.driver' => $dbdriver,
+    'jdbc.url' => $dburl,
+    'jdbc.user' => $dbuser,
+    'jdbc.password' => $dbpassword,
   }
 
   if $::bitbucket_version {
