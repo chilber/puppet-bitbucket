@@ -11,6 +11,7 @@ class bitbucket::params {
       } elsif $::operatingsystemmajrelease =~ /^7$|^14.04$/ {
         $service_file_location = '/etc/init.d/bitbucket'
         $service_file_template = 'bitbucket/bitbucket.initscript.erb'
+        $service_status        = 'status_of_proc'
       } else {
         fail("${::operatingsystem} ${::operatingsystemmajrelease} not supported")
       }
@@ -26,6 +27,7 @@ class bitbucket::params {
         $json_packages         = [ 'rubygem-json', 'ruby-json' ]
         $service_file_location = '/etc/init.d/bitbucket'
         $service_file_template = 'bitbucket/bitbucket.initscript.erb'
+        $service_status        = 'status'
       } else {
         fail("${::operatingsystem} ${::operatingsystemmajrelease} not supported")
       }

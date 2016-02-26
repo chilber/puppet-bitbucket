@@ -60,6 +60,10 @@ log_end_msg () {
 # Depend on lsb-base (>= 3.0-6) to ensure that this file is present.
 . /lib/lsb/init-functions
 
+<% if @osfamily == 'RedHat' && @operatingsystemmajrelease == '6' -%>
+# Source functions for status.
+. /etc/rc.d/init.d/functions
+<% end -%>
 
 run_with_home() {
     if [ "$RUNUSER" != "$USER" ]; then
@@ -112,7 +116,7 @@ case "$1" in
          log_failure_msg "$NAME is not running."
          return 1
        fi
-       status_of_proc -p $PIDFILE "${NAME}" $NAME && exit 0 || exit $?
+       <%= @service_status %> -p $PIDFILE "${NAME}" $NAME && exit 0 || exit $?
        ;;
   restart|force-reload)
     #
