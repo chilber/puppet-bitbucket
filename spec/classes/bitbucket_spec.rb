@@ -21,6 +21,7 @@ describe 'bitbucket' do
           # Install tests
           it { is_expected.not_to contain_exec('shutdown_stash') }
           it { is_expected.not_to contain_exec('move_homedir') }
+          it { is_expected.not_to contain_exec('move_stash_config') }
           it { is_expected.not_to contain_exec('group_migrate') }
           it { is_expected.not_to contain_exec('user_migrate') }
           it { is_expected.to contain_group('bitbucket') }
@@ -636,6 +637,7 @@ describe 'bitbucket' do
       it { is_expected.to contain_class('bitbucket::migrate') }
       it { is_expected.to contain_exec('shutdown_stash') }
       it { is_expected.to contain_exec('move_homedir') }
+      it { is_expected.to contain_exec('move_stash_config') }
       it { is_expected.to contain_exec('group_migrate') }
       it { is_expected.to contain_exec('user_migrate') }
     end
@@ -665,14 +667,26 @@ describe 'bitbucket' do
       it do
         is_expected.to contain_exec('shutdown_stash').with(
           'command' => 'crm resource stop stash && sleep 15',
-          'onlyif'  => '/bin/ps -u stash_user',
+          'onlyif'  => 'ps -u stash_user',
         )
       end
       it do
         is_expected.to contain_exec('move_homedir').with(
-          'command' => '/bin/mv /var/stash /path/to/bitbucket/home',
+          'command' => 'mv /var/stash /path/to/bitbucket/home',
           'creates' => '/path/to/bitbucket/home',
-          'unless'  => '/bin/ps -u stash_user',
+          'unless'  => 'ps -u stash_user',
+        ).that_requires(
+          'Exec[shutdown_stash]',
+        ).that_comes_before(
+          'File[/path/to/bitbucket/home]'
+        )
+      end
+      it do
+        is_expected.to contain_exec('move_stash_config').with(
+          'command' => 'mv /path/to/bitbucket/home/shared/stash-config.properties /path/to/bitbucket/home/shared/stash-config.properties.bak',
+          'creates' => '/path/to/bitbucket/home/shared/stash-config.properties.bak',
+          'onlyif'  => 'test -e /path/to/bitbucket/home/shared/stash-config.properties',
+          'unless'  => 'ps -u stash_user',
         ).that_requires(
           'Exec[shutdown_stash]',
         ).that_comes_before(
@@ -683,7 +697,7 @@ describe 'bitbucket' do
         is_expected.to contain_exec('group_migrate').with(
           'command' => 'groupmod -n custom_group stash_group',
           'onlyif'  => 'cat /etc/group | grep ^stash_group',
-          'unless'  => '/bin/ps -u stash_user',
+          'unless'  => 'ps -u stash_user',
         ).that_requires(
           'Exec[shutdown_stash]'
         ).that_comes_before(
@@ -694,7 +708,7 @@ describe 'bitbucket' do
         is_expected.to contain_exec('user_migrate').with(
           'command' => 'usermod -l custom_user stash_user',
           'onlyif'  => 'cat /etc/passwd | grep ^stash_user',
-          'unless'  => '/bin/ps -u stash_user',
+          'unless'  => 'ps -u stash_user',
         ).that_requires(
           'Exec[shutdown_stash]'
         ).that_comes_before(
