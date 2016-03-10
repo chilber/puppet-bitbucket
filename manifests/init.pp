@@ -157,8 +157,9 @@ class bitbucket (
     }
   }
 
+  anchor { 'bitbucket::start': } ->
   class { '::bitbucket::install': } ->
   class { '::bitbucket::config': } ~>
   class { '::bitbucket::service': } ->
-  Class['::bitbucket']
+  anchor { 'bitbucket::end': }
 }
