@@ -47,11 +47,11 @@ describe 'bitbucket' do
 
           # Config tests
           it { is_expected.to contain_file('/opt/bitbucket/atlassian-bitbucket-4.3.2/conf/server.xml') }
-          it { is_expected.to contain_file_line('java_home') }
+          it { is_expected.to contain_file_line('bitbucket_java_home') }
           it { is_expected.to contain_file_line('bitbucket_home') }
           it { is_expected.to contain_file_line('bitbucket_umask') }
-          it { is_expected.to contain_ini_setting('jvm_minimum_memory') }
-          it { is_expected.to contain_ini_setting('jvm_maximum_memory') }
+          it { is_expected.to contain_ini_setting('bitbucket_jvm_minimum_memory') }
+          it { is_expected.to contain_ini_setting('bitbucket_jvm_maximum_memory') }
           it { is_expected.to contain_ini_setting('bitbucket_user') }
           it { is_expected.to contain_ini_setting('bitbucket_shell') }
           it { is_expected.to contain_ini_setting('bitbucket_httpport') }
@@ -335,7 +335,7 @@ describe 'bitbucket' do
             )
           end
           it do
-            is_expected.to contain_file_line('java_home').with(
+            is_expected.to contain_file_line('bitbucket_java_home').with(
               'ensure' => 'present',
               'path'   => '/path/to/bitbucket/install/atlassian-new-bitbucket-name-4.0.2/bin/setenv.sh',
               'line'   => '  export JAVA_HOME=/etc/alternatives/java',
@@ -359,7 +359,7 @@ describe 'bitbucket' do
             )
           end
           it do
-            is_expected.to contain_ini_setting('jvm_minimum_memory').with(
+            is_expected.to contain_ini_setting('bitbucket_jvm_minimum_memory').with(
               'ensure'  => 'present',
               'path'    => '/path/to/bitbucket/install/atlassian-new-bitbucket-name-4.0.2/bin/setenv.sh',
               'section' => '',
@@ -368,7 +368,7 @@ describe 'bitbucket' do
             )
           end
           it do
-            is_expected.to contain_ini_setting('jvm_maximum_memory').with(
+            is_expected.to contain_ini_setting('bitbucket_jvm_maximum_memory').with(
               'ensure'  => 'present',
               'path'    => '/path/to/bitbucket/install/atlassian-new-bitbucket-name-4.0.2/bin/setenv.sh',
               'section' => '',

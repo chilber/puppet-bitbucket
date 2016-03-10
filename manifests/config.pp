@@ -27,7 +27,7 @@ class bitbucket::config {
 #
 
   # setenv.sh settings
-  file_line {'java_home':
+  file_line {'bitbucket_java_home':
     ensure => present,
     path   => "${::bitbucket::webappdir}/bin/setenv.sh",
     line   => "  export JAVA_HOME=${::bitbucket::javahome}",
@@ -48,7 +48,7 @@ class bitbucket::config {
     match  => '^# umask 0027$',
   }
 
-  ini_setting { 'jvm_minimum_memory':
+  ini_setting { 'bitbucket_jvm_minimum_memory':
     ensure  => present,
     path    => "${::bitbucket::webappdir}/bin/setenv.sh",
     section => '',
@@ -56,7 +56,7 @@ class bitbucket::config {
     value   => $::bitbucket::jvm_minimum_memory,
   }
 
-  ini_setting { 'jvm_maximum_memory':
+  ini_setting { 'bitbucket_jvm_maximum_memory':
     ensure  => present,
     path    => "${::bitbucket::webappdir}/bin/setenv.sh",
     section => '',
