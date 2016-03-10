@@ -144,6 +144,7 @@ class bitbucket (
     if versioncmp($version, $::bitbucket_version) > 0 {
       notify { 'Attempting to upgrade bitbucket': }
       exec { $stop_bitbucket:
+        path   => '/usr/bin:/usr/sbin:/bin:/usr/local/bin',
         before => Class['::bitbucket::install'],
       }
     }
