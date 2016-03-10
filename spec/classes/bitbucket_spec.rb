@@ -16,7 +16,6 @@ describe 'bitbucket' do
           it { is_expected.to contain_class('bitbucket::install').that_comes_before('bitbucket::config') }
           it { is_expected.to contain_class('bitbucket::config') }
           it { is_expected.to contain_class('bitbucket::service').that_subscribes_to('bitbucket::config') }
-          it { is_expected.to contain_class('bitbucket').that_requires('bitbucket::service') }
 
           # Install tests
           it { is_expected.not_to contain_exec('shutdown_stash') }
