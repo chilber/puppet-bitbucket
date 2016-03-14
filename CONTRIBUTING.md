@@ -82,9 +82,9 @@ Beaker tests with:
 This will use the host described in `spec/acceptance/nodeset/default.yml`
 by default. To run against another host, set the `BEAKER_set` environment
 variable to the name of a host described by a `.yml` file in the
-`nodeset` directory. For example, to run against CentOS 6.4:
+`nodeset` directory. For example, to run against CentOS 6.6:
 
-    BEAKER_set=centos-64-x64 bundle exec rake acceptance
+    BEAKER_set=centos-66-x64 bundle exec rake acceptance
 
 If you don't want to have to recreate the virtual machine every time you
 can use `BEAKER_destroy=no` and `BEAKER_provision=no`. On the first run you will
