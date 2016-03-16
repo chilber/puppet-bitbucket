@@ -745,7 +745,7 @@ describe 'bitbucket' do
         }
       end
 
-      it { is_expected.to contain_notify('Attempting to upgrade bitbucket') }
+      it { is_expected.to contain_notify('Attempting to upgrade bitbucket from 4.0.2 to 4.3.2') }
       it { is_expected.to contain_exec('service bitbucket stop && sleep 15') }
     end
     context 'bitbucket class with parameter overrides' do

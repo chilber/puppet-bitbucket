@@ -67,7 +67,6 @@ class bitbucket (
   $migrate_user       = 'stash',
   $migrate_group      = 'stash',
   $migrate_stop       = 'service stash stop && sleep 15',
-
 ) inherits ::bitbucket::params {
 
   validate_absolute_path($javahome)
@@ -138,15 +137,13 @@ class bitbucket (
     'jdbc.password' => $dbpassword,
   }
 
-  if $::bitbucket_version {
+  if defined('$::bitbucket_version') and versioncmp($version, '$::bitbucket_version') > 0 {
     # If the running version of bitbucket is less than the expected version
     # Shut it down in preparation for upgrade.
-    if versioncmp($version, $::bitbucket_version) > 0 {
-      notify { 'Attempting to upgrade bitbucket': }
-      exec { $stop_bitbucket:
-        path   => '/usr/bin:/usr/sbin:/sbin:/bin:/usr/local/bin',
-        before => Class['::bitbucket::install'],
-      }
+    notify { "Attempting to upgrade bitbucket from ${::bitbucket_version} to ${version}": }
+    exec { $stop_bitbucket:
+      path   => '/usr/bin:/usr/sbin:/sbin:/bin:/usr/local/bin',
+      before => Class['::bitbucket::install'],
     }
   }
 
