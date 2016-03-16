@@ -13,19 +13,6 @@ class bitbucket::config {
     mode    => '0640',
   }
 
-#  if versioncmp($::augeasversion, '1.0.0') < 0 {
-#    fail('This module requires Augeas >= 1.0.0')
-#  }
-#
-#  $path = "Server/Service[#attribute/name='Tomcat-Standalone']"
-#
-#  if ! empty($parameters) {
-#    $tomcat_parameters = suffix(prefix(join_keys_to_values($::bitbucket::tomcat_parameters, " '"), "set ${path}/Connector/#attribute/"), "'")
-#  } else {
-#    $tomcat_parameters = undef
-#  }
-#
-
   # setenv.sh settings
   file_line {'bitbucket_java_home':
     ensure => present,
