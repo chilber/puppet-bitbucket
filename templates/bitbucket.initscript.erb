@@ -13,13 +13,13 @@
 
 # Adapt the following lines to your configuration
 # RUNUSER: The user to run Bitbucket Server as.
-RUNUSER=<%= @user %>
+RUNUSER=<%= scope.lookupvar('bitbucket::user') %>
 
 # BITBUCKET_INSTALLDIR: The path to the Bitbucket Server installation directory
-BITBUCKET_INSTALLDIR="<%= @webappdir %>"
+BITBUCKET_INSTALLDIR="<%= scope.lookupvar('bitbucket::webappdir') %>"
 
 # BITBUCKET_HOME: Path to the Bitbucket home directory
-BITBUCKET_HOME="<%= @homedir %>"
+BITBUCKET_HOME="<%= scope.lookupvar('bitbucket::homedir') %>"
 
 # ==================================================================================
 # ==================================================================================
@@ -116,7 +116,7 @@ case "$1" in
          log_failure_msg "$NAME is not running."
          return 1
        fi
-       <%= @service_status %> -p $PIDFILE "${NAME}" $NAME && exit 0 || exit $?
+       <%= scope.lookupvar('bitbucket::service_status') %> -p $PIDFILE "${NAME}" $NAME && exit 0 || exit $?
        ;;
   restart|force-reload)
     #
