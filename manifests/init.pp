@@ -137,13 +137,15 @@ class bitbucket (
     'jdbc.password' => $dbpassword,
   }
 
-  if defined('$::bitbucket_version') and versioncmp($version, '$::bitbucket_version') > 0 {
-    # If the running version of bitbucket is less than the expected version
-    # Shut it down in preparation for upgrade.
-    notify { "Attempting to upgrade bitbucket from ${::bitbucket_version} to ${version}": }
-    exec { $stop_bitbucket:
-      path   => '/usr/bin:/usr/sbin:/sbin:/bin:/usr/local/bin',
-      before => Class['::bitbucket::install'],
+  if defined('$::bitbucket_version') {
+    if versioncmp($version, $::bitbucket_version) > 0 {
+      # If the running version of bitbucket is less than the expected version
+      # Shut it down in preparation for upgrade.
+      notify { "Attempting to upgrade bitbucket from ${::bitbucket_version} to ${version}": }
+      exec { $stop_bitbucket:
+        path   => '/usr/bin:/usr/sbin:/sbin:/bin:/usr/local/bin',
+        before => Class['::bitbucket::install'],
+      }
     }
   }
 
