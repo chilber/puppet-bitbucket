@@ -6,7 +6,7 @@ class bitbucket::params {
       $json_packages           = [ 'rubygem-json', 'ruby-json' ]
       $service_lockfile        = '/var/lock/bitbucket'
       if $::operatingsystemmajrelease == '8' {
-        $service_file_location = '/usr/lib/systemd/system/bitbucket.service'
+        $service_file_location = '/lib/systemd/system/bitbucket.service'
         $service_file_template = 'bitbucket/bitbucket.service.erb'
       } elsif $::operatingsystemmajrelease =~ /^7$|^14.04$/ {
         $service_file_location = '/etc/init.d/bitbucket'
